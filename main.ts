@@ -33,6 +33,16 @@ if (REPLY.includes("\n") || REPLY.includes("\r")) {
 if (REPLY.trim().length === 0) {
   throw new Error("entry reply must not be blank");
 }
+// Keep the reply pure ASCII with no leading or trailing space: the
+// gate counts characters, and ASCII keeps the character count and the
+// byte count the same, so what the judge reads is exactly what was
+// counted here — no multi-byte surprise and no padding to trim.
+if (REPLY !== REPLY.trim()) {
+  throw new Error("entry reply must not start or end with whitespace");
+}
+if (!/^[\x20-\x7e]*$/.test(REPLY)) {
+  throw new Error("entry reply must be ASCII only");
+}
 
 const dst = path.join(outDir, "entry.txt");
 fs.mkdirSync(outDir, { recursive: true });
